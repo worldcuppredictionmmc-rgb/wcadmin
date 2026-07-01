@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Admin Dashboard</title>
+
+<style>
+body{
+background:#020617;
+color:white;
+font-family:Poppins,sans-serif;
+padding:20px;
+}
+
+.card{
+background:#0f172a;
+padding:20px;
+border-radius:20px;
+margin-bottom:20px;
+}
+
+input{
+width:80px;
+padding:10px;
+border:none;
+border-radius:10px;
+margin:5px;
+}
+
+button{
+padding:10px 20px;
+background:#22c55e;
+border:none;
+border-radius:10px;
+color:white;
+font-weight:700;
+cursor:pointer;
+}
+
+.rank-card{
+background:#0f172a;
+padding:15px;
+border-radius:15px;
+margin-bottom:10px;
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+</style>
+</head>
+
+<body>
+
+<h1>FIFA Prediction Admin Panel</h1>
+
+<div class="card">
+<h2>Belgium VS Senegal</h2>
+<label>
+<input type="radio" name="match1" value="BEL">
+Belgium
+</label>
+
+<label>
+<input type="radio" name="match1" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match1" value="SEN">
+senegal
+</label>
+</div>
+
+<div class="card">
+<h2>usa vs bosnia</h2>
+<label>
+<input type="radio" name="match2" value="USA">
+usa
+</label>
+
+<label>
+<input type="radio" name="match2" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match2" value="BIH">
+bosnia
+</label>
+</div>
+
+
+<div class="card">
+<h2>spain vs austria</h2>
+<label>
+<input type="radio" name="match3" value="ESP">
+spain
+</label>
+
+<label>
+<input type="radio" name="match3" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match3" value="AUT">
+austria
+</label>
+</div>
+
+<div class="card">
+<h2>portugal vs croatia</h2>
+<label>
+<input type="radio" name="match4" value="POR">
+portugal
+</label>
+
+<label>
+<input type="radio" name="match4" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match4" value="CRO">
+croatia
+</label>
+</div>
+
+<div class="card">
+<h2>Switzerland vs algeria</h2>
+<label>
+<input type="radio" name="match5" value="SUI">
+switzerland
+</label>
+
+<label>
+<input type="radio" name="match5" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match5" value="ALG">
+algeria
+</label>
+</div>
+
+<div class="card">
+<h2>australia vs egypt</h2>
+<label>
+<input type="radio" name="match6" value="AUS">
+australia
+</label>
+
+<label>
+<input type="radio" name="match6" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match6" value="EGY">
+egypt
+</label>
+</div>
+
+<div class="card">
+<h2>argentina vs cabo verde</h2>
+<label>
+<input type="radio" name="match7" value="ARG">
+argentina
+</label>
+
+<label>
+<input type="radio" name="match7" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match7" value="CPV">
+cabo verde
+</label>
+</div>
+
+<div class="card">
+<h2>colombia vs ghana</h2>
+<label>
+<input type="radio" name="match8" value="COL">
+colombia
+</label>
+
+<label>
+<input type="radio" name="match8" value="Draw">
+Draw
+</label>
+
+<label>
+<input type="radio" name="match8" value="GHA">
+ghana
+</label>
+</div>
+
+<button onclick="saveAllResults()">
+Save All Results
+</button>
+
+<h2 style="margin-top:30px;">
+Leaderboard<br>
+---------------           
+</h2>
+
+<div id="leaderboard"></div>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+import {
+getFirestore,
+doc,
+setDoc,
+collection,
+getDocs,
+updateDoc
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyAw4cJY7oXYrXRyvawehCU7TKCRg5ZS6GY",
+authDomain: "world-cup-prediction-1ebca.firebaseapp.com",
+projectId: "world-cup-prediction-1ebca",
+storageBucket: "world-cup-prediction-1ebca.firebasestorage.app",
+messagingSenderId: "950989220636",
+appId: "1:950989220636:web:cd9f82db31549fad3068d9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.saveAllResults = async function(){
+
+const matches = [];
+
+for(let i=1;i<=8;i++){
+
+const selected = document.querySelector(
+`input[name="match${i}"]:checked`
+);
+
+if(!selected){
+alert("Select result for Match " + i);
+return;
+}
+
+await setDoc(
+doc(db,"phase2_results",`match${i}`),
+{
+winner:selected.value
+}
+);
+
+matches.push(selected.value);
+}
+
+const snapshot =
+await getDocs(collection(db,"phase2_predictions"));
+
+for(const userDoc of snapshot.docs){
+
+const data = userDoc.data();
+
+let points = 0;
+
+for(let i=1;i<=8;i++){
+
+if(data[`match${i}`] === matches[i-1]){
+points += 2;
+}
+
+}
+
+await updateDoc(
+doc(db,"phase2_predictions",userDoc.id),
+{
+points: points
+}
+);
+
+}
+
+await loadLeaderboard();
+alert("All Results Saved & Points Updated");
+
+}
+
+async function loadLeaderboard(){
+
+const leaderboard =
+document.getElementById("leaderboard");
+
+const snapshot =
+await getDocs(collection(db,"phase2_predictions"));
+
+const users = [];
+
+snapshot.forEach((doc)=>{
+users.push(doc.data());
+});
+
+users.sort((a,b)=>
+(b.points || 0) - (a.points || 0)
+);
+
+leaderboard.innerHTML = "";
+
+users.forEach((user,index)=>{
+
+leaderboard.innerHTML += `
+<div class="rank-card">
+<div>
+<b>#${index+1} ${user.name}</b>
+</div>
+
+<div>
+${user.points || 0} pts
+</div>
+</div>
+`;
+
+});
+
+}
+
+loadLeaderboard();
+</script>
+</body>
+</html>
