@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup Prediction Hub</title>
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:
+    radial-gradient(circle at top, rgba(56,189,248,.15), transparent 55%),
+    #0f172a;
+    color:white;
+    min-height:100vh;
+}
+
+.container{
+    width:90%;
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+
+.header{
+    text-align:center;
+    margin-top:20px;
+}
+
+.logo{
+    width:120px;
+    height:120px;
+    object-fit:contain;
+    margin-bottom:15px;
+}
+
+.header p{
+    color:#cbd5e1;
+    font-size:20px;
+}
+
+
+.union-title{
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:1px;
+    color:#38bdf8;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+
+.header h2{
+    font-size:20px;
+    font-weight:500;
+    color:#cbd5e1;
+    margin-bottom:5px;
+}
+
+.header p{
+    color:#cbd5e1;
+    font-size:20px;
+    margin-bottom:15px;
+}
+
+.event-tag{
+    margin-top:15px;
+    color:#22c55e;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+}
+
+
+.title{
+    text-align:center;
+    margin:30px 0;
+}
+
+.title h1{
+    font-size:48px;
+    font-weight:900;
+    background:linear-gradient(90deg,#22c55e,#38bdf8);
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+    line-height:1.1;
+}
+
+.title p{
+    color:#94a3b8;
+    margin-top:10px;
+    font-size:17px;
+}
+
+.form-card{
+    background:#1e293b;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:20px;
+    border:1px solid rgba(56,189,248,.2);
+}
+
+.input-group{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:5px;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid transparent;
+    border-radius:10px;
+    background:#334155;
+    color:white;
+    transition:.3s;
+}
+
+input:focus,
+select:focus{
+    outline:none;
+    border-color:#38bdf8;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.matches-title{
+    margin:25px 0 15px;
+    color:#38bdf8;
+    font-size:28px;
+    border-left:4px solid #38bdf8;
+    padding-left:10px;
+}
+
+.match-card{
+    background:#1e293b;
+    padding:18px;
+    border-radius:15px;
+    margin-bottom:15px;
+    border:1px solid rgba(56,189,248,.2);
+    transition:.3s;
+}
+
+.match-card:hover{
+    transform:translateY(-3px);
+    border-color:#38bdf8;
+}
+
+.teams{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.team{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.team img{
+    width:50px;
+    height:50px;
+    object-fit:cover;
+    border-radius:50%;
+    border:2px solid white;
+    background:white;
+}
+
+.score-area{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:10px;
+    margin-top:15px;
+}
+
+.score{
+    width:70px;
+    text-align:center;
+}
+
+.vs{
+    font-weight:bold;
+}
+
+.prediction-options{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.prediction-options label{
+    flex:1;
+    cursor:pointer;
+}
+
+.prediction-options input{
+    display:none;
+}
+
+.prediction-btn{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:45px;
+    background:#334155;
+    border:2px solid #475569;
+    border-radius:12px;
+    font-weight:700;
+    color:white;
+    transition:.3s;
+    user-select:none;
+}
+
+.prediction-options label:hover .prediction-btn{
+    border-color:#38bdf8;
+    transform:translateY(-2px);
+}
+
+.prediction-options input:checked + .prediction-btn{
+    background:#22c55e;
+    border-color:#22c55e;
+    color:white;
+    box-shadow:0 0 15px rgba(34,197,94,.4);
+}
+
+@media(max-width:600px){
+
+.prediction-options{
+    gap:6px;
+}
+
+.prediction-btn{
+    height:48px;
+    font-size:13px;
+    padding:5px;
+}
+
+}
+
+button{
+    width:100%;
+    padding:16px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,#22c55e,#16a34a);
+    color:white;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+    transition:.3s;
+}
+
+button:hover{
+    opacity:.9;
+    transform:translateY(-2px);
+}
+
+button:disabled{
+    opacity:0.6;
+    cursor:not-allowed;
+}
+
+.footer{
+    text-align:center;
+    margin-top:60px;
+    padding:30px;
+    color:#cbd5e1;
+    font-size:15px;
+    font-weight:600;
+}
+
+.logo-container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:25px;
+    margin-bottom:15px;
+}
+
+      .latest-btn{
+    width:100%;
+    padding:16px;
+    margin-top:12px;
+    border:none;
+    border-radius:12px;
+    background:linear-gradient(90deg,#22c55e,#16a34a);
+    color:white;
+    font-size:18px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+
+
+
+@media(max-width:600px){
+
+.row{
+    grid-template-columns:1fr;
+}
+
+.team span{
+    font-size:15px;
+    font-weight:700;
+}
+
+.team img{
+    width:35px;
+    height:35px;
+}
+
+.score{
+    width:55px;
+}
+
+.title h1{
+    font-size:30px;
+    font-weight:800;
+}
+
+.event-tag{
+    font-size:15px;
+}
+
+.union-title{
+    font-size:24px;
+}
+
+.header h2{
+    font-size:16px;
+}
+
+.header p{
+    font-size:16px;
+}
+
+.logo{
+    width:75px;
+    height:75px;
+}
+
+}
+.prediction-options{
+display:flex;
+gap:12px;
+margin-top:18px;
+}
+
+.prediction-options label{
+flex:1;
+text-align:center;
+padding:12px;
+background:#334155;
+border:2px solid transparent;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+transition:.3s;
+}
+
+.prediction-options input{
+display:none;
+}
+
+.prediction-options label:hover{
+border-color:#38bdf8;
+}
+
+.prediction-options input:checked + span{
+color:#22c55e;
+}
+
+</style>
+</head>
+<body>
+<div id="mainContent">
+<div class="container">
+
+<div class="header">
+<div class="logo-container">
+    <img src="logo.png" class="logo">
+    <img src="logo1.png" class="logo">
+</div>
+
+<h1 class="union-title">
+AAVAAZ COLLEGE UNION
+</h1>
+
+<h2>
+Mary Matha Arts & Science College
+</h2>
+
+<p>Mananthavady</p>
+
+<h4 class="event-tag">FIFA WORLD CUP 2026 PREDICTION CONTEST
+</h4>
+
+</div>
+
+<div class="title">
+<h1> World Cup Prediction Hub</h1>
+<p>
+World Cup 2026 round of 32 - Phase1.
+</p>
+</div>
+
+<div class="form-card">
+<div class="input-group">
+<label>Name</label>
+<input type="text" id="name">
+</div>
+<div class="input-group">
+<label>Role</label>
+<select id="role">
+<option>Student</option>
+<option>Faculty</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Admission Number</label>
+<input type="text" id="rollno">
+</div>
+
+<div class="input-group">
+<label>Department</label>
+<select id="department">
+<option>Select Department</option>
+<option>Chemistry</option>
+<option>Computer Science</option>
+<option>Zoology</option>
+<option>Commerce</option>
+<option>English</option>
+<option>Mathematics</option>
+<option>Physics</option>
+<option>Social Science - Economics</option>
+</select>
+</div>
+
+<div class="input-group">
+<label>Year</label>
+<select id="year">
+<option>Select Year</option>
+<option>1st Year</option>
+<option>2nd Year</option>
+<option>3rd Year</option>
+</select>
+</div>
+
+</div>
+
+</div>
+
+<h2 class="matches-title">Phase 2 Matches</h2>
+
+<div id="matches-container"></div>
+
+<button id="submitBtn" onclick="submitPrediction()">
+Submit Prediction
+</button>
+<!--<button class="latest-btn"
+onclick="window.open('https://world-cup-prediction.pages.dev/')">
+ Click Here For Last Predictions
+</button>-->
+<div class="footer">
+ Designed & Developed by <strong>Faris Moideen</strong><br>
+@ IT Club Dept.of CS
+</div>
+
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.15.0/firebase-app.js";
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  setDoc,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/12.15.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAw4cJY7oXYrXRyvawehCU7TKCRg5ZS6GY",
+  authDomain: "world-cup-prediction-1ebca.firebaseapp.com",
+  projectId: "world-cup-prediction-1ebca",
+  storageBucket: "world-cup-prediction-1ebca.firebasestorage.app",
+  messagingSenderId: "950989220636",
+  appId: "1:950989220636:web:cd9f82db31549fad3068d9"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const matches = [
+
+{
+home:"Belgium",
+homeCode:"BEL",
+
+away:"Senegal",
+awayCode:"SEN",
+
+homeLogo:"bel.png",
+awayLogo:"senegal.png"
+},
+
+{
+home:"USA",
+homeCode:"USA",
+
+away:"Bosnia and herzegovina",
+awayCode:"BIH",
+
+homeLogo:"usa.png",
+awayLogo:"bosnia.png"
+},
+
+{
+home:"Spain",
+homeCode:"ESP",
+
+away:"Austria",
+awayCode:"AUT",
+
+homeLogo:"spa.png",
+awayLogo:"austria.png"
+},
+
+{
+home:"Portugal",
+homeCode:"POR",
+
+away:"Croatia",
+awayCode:"CRO",
+
+homeLogo:"portugal.png",
+awayLogo:"croatia.png"
+},
+
+{
+home:"Switzerland",
+homeCode:"SUI",
+
+away:"Algeria",
+awayCode:"ALG",
+
+homeLogo:"swiz.png",
+awayLogo:"algeria.png"
+},
+
+{
+home:"Australia",
+homeCode:"AUS",
+
+away:"Egypt",
+awayCode:"EGY",
+
+homeLogo:"austra.png",
+awayLogo:"egy.png"
+},
+
+{
+home:"Argentina",
+homeCode:"ARG",
+
+away:"Cabo Verde",
+awayCode:"CPV",
+
+homeLogo:"argentina.png",
+awayLogo:"cbv.png"
+},
+{
+home:"colombia",
+homeCode:"COL",
+
+away:"Ghana",
+awayCode:"GHA",
+
+homeLogo:"colombia.png",
+awayLogo:"ghana.jpeg"
+} 
+];
+
+
+const container = document.getElementById("matches-container");
+console.log(matches);
+matches.forEach((match,index) => {
+
+container.innerHTML += `
+
+<div class="match-card">
+
+<div class="teams">
+
+<div class="team">
+<img src="${match.homeLogo}">
+<span>${match.home}</span>
+</div>
+
+<div class="team">
+<img src="${match.awayLogo}">
+<span>${match.away}</span>
+</div>
+
+</div>
+<div class="prediction-options">
+
+<label>
+
+<input
+type="radio"
+name="match${index}"
+value="${match.homeCode}">
+
+<div class="prediction-btn">
+${match.home}
+</div>
+
+</label>
+
+<label>
+
+<input
+type="radio"
+name="match${index}"
+value="Draw">
+
+<div class="prediction-btn">
+🤝 Draw
+</div>
+
+</label>
+
+<label>
+
+<input
+type="radio"
+name="match${index}"
+value="${match.awayCode}">
+
+<div class="prediction-btn">
+${match.away}
+</div>
+
+</label>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+window.submitPrediction = async function() {
+
+const btn = document.getElementById("submitBtn");
+
+if (btn.disabled) return;
+
+btn.disabled = true;
+btn.innerText = "Submitting...";
+
+if (!document.getElementById("name").value) {
+  alert("Please enter your name");
+  btn.disabled = false;
+  btn.innerText = "Submit Prediction";
+  return;
+}
+
+if(
+document.getElementById("role").value === "Student" &&
+document.getElementById("department").value === "Select Department"
+){
+alert("Please select your department");
+btn.disabled = false;
+btn.innerText = "Submit Prediction";
+return;
+}
+
+if(
+document.getElementById("role").value === "Student" &&
+!document.getElementById("rollno").value.trim()
+){
+alert("Please enter your roll number");
+btn.disabled = false;
+btn.innerText = "Submit Prediction";
+return;
+}
+
+if(
+document.getElementById("role").value === "Student" &&
+document.getElementById("year").value === "Select Year"
+){
+alert("Please select your year");
+btn.disabled = false;
+btn.innerText = "Submit Prediction";
+return;
+}
+
+
+const predictions = [];
+
+let allFilled = true;
+
+for(let i=0;i<matches.length;i++){
+
+const selected = document.querySelector(
+`input[name="match${i}"]:checked`
+);
+
+if(!selected){
+
+allFilled = false;
+break;
+
+}
+
+predictions.push(selected.value);
+
+}
+
+if(!allFilled){
+
+alert("Please select one prediction for every match.");
+
+btn.disabled = false;
+btn.innerText = "Submit Prediction";
+
+return;
+
+}
+
+
+const data = {
+  name: document.getElementById("name").value,
+  role: document.getElementById("role").value,
+  rollno: document.getElementById("rollno").value,
+
+department: document.getElementById("department").value,
+year: document.getElementById("year").value,
+
+match1: predictions[0],
+match2: predictions[1],
+match3: predictions[2],
+match4: predictions[3],
+match5: predictions[4],
+match6: predictions[5],
+match7: predictions[6],
+match8: predictions[7]
+};
+const snapshot = await getDocs(collection(db,"predictions_phase2"));
+
+let alreadySubmitted = false;
+
+snapshot.forEach((doc) => {
+
+const user = doc.data();
+
+if(
+data.role === "Student" &&
+user.rollno === data.rollno
+){
+alreadySubmitted = true;
+}
+
+if(
+data.role === "Faculty" &&
+user.role === "Faculty" &&
+user.name.trim().toLowerCase() === data.name.trim().toLowerCase()
+){
+alreadySubmitted = true;
+}
+
+});
+
+if(alreadySubmitted){
+
+alert("You have already submitted!");
+
+btn.disabled = false;
+btn.innerText = "Submit Prediction";
+
+return;
+}
+try {
+
+const response = await fetch(
+"https://script.google.com/macros/s/AKfycbwPxob-mF82HDdFa_baLd_cFhQBUaJ7qVQ4xn_5R5cdEWsj2Wr7vrGeFcgQDSEtkdF9/exec",
+{
+method: "POST",
+body: JSON.stringify(data)
+}
+);
+
+console.log(response);
+
+await addDoc(
+collection(db, "predictions_phase2"),
+{
+name:data.name,
+role:data.role,
+rollno:data.rollno,
+department:data.department,
+year:data.year,
+match1:data.match1,
+match2:data.match2,
+match3:data.match3,
+match4:data.match4,
+match5:data.match5,
+match6:data.match6,
+match7:data.match7,
+match8:data.match8,
+
+points:0,
+createdAt:Date.now()
+}
+);
+
+document.getElementById("mainContent").innerHTML = `
+<div style="text-align:center;padding:50px">
+
+<div style="display:flex;justify-content:center;gap:20px;">
+    <img src="logo.png" style="width:80px">
+    <img src="logo1.png" style="width:80px">
+</div>
+
+<h1 style="margin-top:20px;color:#22c55e;font-size:42px;">
+🎉 Prediction Submitted Successfully
+</h1>
+
+<p style="font-size:20px;margin-top:15px;">
+Best of luck!
+</p>
+
+<p style="margin-top:15px;color:#cbd5e1;">
+Thank you for participating in the World Cup Prediction Hub.
+</p>
+    <button class="latest-btn"
+onclick="window.open('https://wchub.pages.dev/')">
+ Click Here For Home Page
+</button>
+
+<div style="
+margin-top:30px;
+background:#1e293b;
+padding:20px;
+border-radius:15px;
+max-width:500px;
+margin-left:auto;
+margin-right:auto;
+">
+
+<h3>${data.name}</h3>
+
+${data.role === "Faculty"
+? `<p>Faculty</p>`
+: `
+<p>${data.rollno}</p>
+<p>${data.department}</p>
+<p>${data.year}</p>
+`
+}
+
+</div>
+
+</div>
+`;
+
+}catch(error) {
+
+console.error(error);
+alert("❌ Submission Failed");
+
+btn.disabled = false;
+btn.innerText = "Submit Prediction";
+
+}
+
+}
+
+document.getElementById("role").addEventListener("change",function(){
+
+const department =
+document.getElementById("department").parentElement;
+
+const year =
+document.getElementById("year").parentElement;
+
+const rollno =
+document.getElementById("rollno").parentElement;
+
+if(this.value === "Faculty"){
+
+department.style.display = "none";
+year.style.display = "none";
+rollno.style.display = "none";
+
+}else{
+
+department.style.display = "block";
+year.style.display = "block";
+rollno.style.display = "block";
+
+}
+
+});
+
+</script>
+</div>
+</body>
+</html>
