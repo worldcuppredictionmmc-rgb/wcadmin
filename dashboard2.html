@@ -66,7 +66,9 @@ Belgium
 senegal
 </label>
 </div>
-
+<button onclick="saveResult(1)">
+Save Result
+</button>
 <div class="card">
 <h2>usa vs bosnia</h2>
 <label>
@@ -79,7 +81,9 @@ usa
 bosnia
 </label>
 </div>
-
+<button onclick="saveResult(2)">
+Save Result
+</button>
 
 <div class="card">
 <h2>spain vs austria</h2>
@@ -93,7 +97,9 @@ spain
 austria
 </label>
 </div>
-
+<button onclick="saveResult(3)">
+Save Result
+</button>
 <div class="card">
 <h2>portugal vs croatia</h2>
 <label>
@@ -106,7 +112,11 @@ portugal
 croatia
 </label>
 </div>
-
+  
+<button onclick="saveResult(4)">
+Save Result
+</button>
+  
 <div class="card">
 <h2>Switzerland vs algeria</h2>
 <label>
@@ -120,6 +130,10 @@ algeria
 </label>
 </div>
 
+  <button onclick="saveResult(5)">
+Save Result
+</button>
+
 <div class="card">
 <h2>australia vs egypt</h2>
 <label>
@@ -132,7 +146,9 @@ australia
 egypt
 </label>
 </div>
-
+<button onclick="saveResult(6)">
+Save Result
+</button>
 <div class="card">
 <h2>argentina vs cabo verde</h2>
 <label>
@@ -145,7 +161,9 @@ argentina
 cabo verde
 </label>
 </div>
-
+<button onclick="saveResult(7)">
+Save Result
+</button>
 <div class="card">
 <h2>colombia vs ghana</h2>
 <label>
@@ -159,8 +177,8 @@ ghana
 </label>
 </div>
 
-<button onclick="saveAllResults()">
-Save All Results
+<button onclick="saveResult(8)">
+Save Result
 </button>
 
 <h2 style="margin-top:30px;">
@@ -179,6 +197,7 @@ import {
 getFirestore,
 doc,
 setDoc,
+getDoc,
 collection,
 getDocs,
 updateDoc
@@ -196,69 +215,81 @@ appId: "1:950989220636:web:cd9f82db31549fad3068d9"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.saveAllResults = async function(){
-
-const matches = [];
-
-for(let i=1;i<=8;i++){
+window.saveResult = async function(matchNo) {
 
 const selected = document.querySelector(
-`input[name="match${i}"]:checked`
+`input[name="match${matchNo}"]:checked`
 );
 
 if(!selected){
-alert("Select result for Match " + i);
+alert("Select result for Match " + matchNo);
 return;
 }
 
+if(!confirm("Are you sure you want to save this result?")){
+    return;
+}
+
+const resultDoc = await getDoc(
+doc(db,"phase2_results",`match${matchNo}`)
+);
+
+if(resultDoc.exists()){
+    alert("Result already saved for this match.");
+    return;
+}
+
 await setDoc(
-doc(db,"phase2_results",`match${i}`),
+doc(db,"phase2_results",`match${matchNo}`),
 {
-winner:selected.value
+winner: selected.value,
+locked: true
 }
 );
 
-matches.push(selected.value);
-}
 
 const snapshot =
-await getDocs(collection(db,"phase2_predictions"));
+await getDocs(collection(db,"predictions_phase2"));
 
 for(const userDoc of snapshot.docs){
 
 const data = userDoc.data();
 
-let points = 0;
-
-for(let i=1;i<=8;i++){
-
-if(data[`match${i}`] === matches[i-1]){
-points += 2;
+  if(data[`match${matchNo}Awarded`]){
+    continue;
 }
+  
+let points = data.points || 0;
 
+if(data[`match${matchNo}`] === selected.value){
+    points += 2;
 }
 
 await updateDoc(
-doc(db,"phase2_predictions",userDoc.id),
+doc(db,"predictions_phase2",userDoc.id),
 {
-points: points
+points: points,
+[`match${matchNo}Awarded`]: true
 }
 );
-
 }
 
 await loadLeaderboard();
-alert("All Results Saved & Points Updated");
 
+document.querySelector(
+`button[onclick="saveResult(${matchNo})"]`
+).disabled = true;
+
+alert("Match " + matchNo + " saved successfully");
 }
-
+  
 async function loadLeaderboard(){
 
 const leaderboard =
 document.getElementById("leaderboard");
 
 const snapshot =
-await getDocs(collection(db,"phase2_predictions"));
+await getDocs(collection(db,"predictions_phase2"));
 
 const users = [];
 
