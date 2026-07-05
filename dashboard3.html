@@ -175,14 +175,10 @@ switzerland
 <input type="radio" name="match8" value="COL">
 Colombia
 </label>
-</div><br>
+</div>
 
 <button onclick="saveResult(8)">
 Save Result
-</button>
-
-  <button onclick="recalculatePoints()">
-🔄 Recalculate All Points
 </button>
 
 <h2 style="margin-top:30px;">
@@ -234,20 +230,55 @@ if(!confirm("Are you sure you want to save this result?")){
     return;
 }
 
+const resultDoc = await getDoc(
+doc(db,"phase3_results",`match${matchNo}`)
+);
+
+if(resultDoc.exists()){
+    alert("Result already saved for this match.");
+    return;
+}
 
 await setDoc(
 doc(db,"phase3_results",`match${matchNo}`),
 {
-winner:selected.value,
-locked:true
-});
+winner: selected.value,
+locked: true
+}
+);
 
 
-await recalculatePoints();
+const snapshot =
+await getDocs(collection(db,"predictions_phase3"));
 
+for(const userDoc of snapshot.docs){
+
+const data = userDoc.data();
+
+  if(data[`match${matchNo}Awarded`]){
+    continue;
+}
+  
+let points = data.points || 0;
+
+if(data[`match${matchNo}`] === selected.value){
+    points += 2;
+}
+
+await updateDoc(
+doc(db,"predictions_phase3",userDoc.id),
+{
+points: points,
+[`match${matchNo}Awarded`]: true
+}
+);
+}
 
 await loadLeaderboard();
 
+document.querySelector(
+`button[onclick="saveResult(${matchNo})"]`
+).disabled = true;
 
 alert("Match " + matchNo + " saved successfully");
 }
@@ -287,58 +318,6 @@ ${user.points || 0} pts
 `;
 
 });
-
-}
-
-  window.recalculatePoints = async function(){
-
-const results = {};
-
-const resultSnapshot = await getDocs(collection(db,"phase3_results"));
-
-resultSnapshot.forEach((d)=>{
-results[d.id] = d.data().winner;
-});
-
-const usersSnapshot = await getDocs(collection(db,"predictions_phase3"));
-
-for(const userDoc of usersSnapshot.docs){
-
-const data = userDoc.data();
-
-let points = 0;
-
-for(let i=1;i<=8;i++){
-
-if(results[`match${i}`] &&
-data[`match${i}`] === results[`match${i}`]){
-points += 2;
-}
-
-}
-
-await updateDoc(
-doc(db,"predictions_phase3",userDoc.id),
-{
-points: points,
-
-match1Awarded:true,
-match2Awarded:true,
-match3Awarded:true,
-match4Awarded:true,
-match5Awarded:true,
-match6Awarded:true,
-match7Awarded:true,
-match8Awarded:true
-
-}
-);
-
-}
-
-await loadLeaderboard();
-
-
 
 }
 
