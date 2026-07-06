@@ -231,7 +231,7 @@ if(!confirm("Are you sure you want to save this result?")){
 }
 
 const resultDoc = await getDoc(
-doc(db,"phase3_results",`match${matchNo}`)
+doc(db,"_results",`match${matchNo}`)
 );
 
 if(resultDoc.exists()){
@@ -240,7 +240,7 @@ if(resultDoc.exists()){
 }
 
 await setDoc(
-doc(db,"phase3_results",`match${matchNo}`),
+doc(db,"_results",`match${matchNo}`),
 {
 winner: selected.value,
 locked: true
@@ -272,7 +272,7 @@ points: points,
 [`match${matchNo}Awarded`]: true
 }
 );
-}
+
 
 await loadLeaderboard();
 
