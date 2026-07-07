@@ -273,7 +273,7 @@ points: points,
 }
 );
 
-}
+} // <-- for loop ends here
 
 await loadLeaderboard();
 
@@ -282,6 +282,8 @@ document.querySelector(
 ).disabled = true;
 
 alert("Match " + matchNo + " saved successfully");
+
+}; // <-- saveResult function ends here
   
 async function loadLeaderboard(){
 
