@@ -231,7 +231,7 @@ if(!confirm("Are you sure you want to save this result?")){
 }
 
 const resultDoc = await getDoc(
-doc(db,"phase2_results",`match${matchNo}`)
+doc(db,"phase3_results",`match${matchNo}`)
 );
 
 if(resultDoc.exists()){
@@ -240,7 +240,7 @@ if(resultDoc.exists()){
 }
 
 await setDoc(
-doc(db,"phase2_results",`match${matchNo}`),
+doc(db,"phase3_results",`match${matchNo}`),
 {
 winner: selected.value,
 locked: true
@@ -249,7 +249,7 @@ locked: true
 
 
 const snapshot =
-await getDocs(collection(db,"predictions_phase2"));
+await getDocs(collection(db,"predictions_phase3"));
 
 for(const userDoc of snapshot.docs){
 
@@ -266,7 +266,7 @@ if(data[`match${matchNo}`] === selected.value){
 }
 
 await updateDoc(
-doc(db,"predictions_phase2",userDoc.id),
+doc(db,"predictions_phase3",userDoc.id),
 {
 points: points,
 [`match${matchNo}Awarded`]: true
@@ -289,7 +289,7 @@ const leaderboard =
 document.getElementById("leaderboard");
 
 const snapshot =
-await getDocs(collection(db,"predictions_phase2"));
+await getDocs(collection(db,"predictions_phase3"));
 
 const users = [];
 
