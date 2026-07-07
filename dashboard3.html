@@ -255,10 +255,10 @@ for(const userDoc of snapshot.docs){
 
 const data = userDoc.data();
 
-  if(data[`match${matchNo}Awarded`]){
+if(data[`match${matchNo}Awarded`]){
     continue;
 }
-  
+
 let points = data.points || 0;
 
 if(data[`match${matchNo}`] === selected.value){
@@ -273,6 +273,7 @@ points: points,
 }
 );
 
+}
 
 await loadLeaderboard();
 
@@ -281,7 +282,6 @@ document.querySelector(
 ).disabled = true;
 
 alert("Match " + matchNo + " saved successfully");
-}
   
 async function loadLeaderboard(){
 
