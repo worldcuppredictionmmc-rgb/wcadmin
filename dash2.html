@@ -55,25 +55,25 @@ align-items:center;
 <h1>FIFA Prediction Admin Panel</h1>
 
 <div class="card">
-<h2>France vs Spain</h2>
+<h2>France vs England/h2>
 <label>
 <input type="radio" name="match1" value="FRA">
 france
 </label>
 
 <label>
-<input type="radio" name="match1" value="SPA">
-Spain
+<input type="radio" name="match1" value="ENG">
+England
 </label>
 </div>
 <button onclick="saveResult(1)">
 Save Result
 </button>
 <div class="card">
-<h2>eng vs arg</h2>
+<h2>SPA vs arg</h2>
 <label>
-<input type="radio" name="match2" value="ENG">
-England
+<input type="radio" name="match2" value="SPA">
+Spain
 </label>
 
 <label>
@@ -136,7 +136,7 @@ if(!confirm("Are you sure you want to save this result?")){
 }
 
 const resultDoc = await getDoc(
-doc(db,"phase5_results",`match${matchNo}`)
+doc(db,"phase6_results",`match${matchNo}`)
 );
 
 if(resultDoc.exists()){
@@ -145,7 +145,7 @@ if(resultDoc.exists()){
 }
 
 await setDoc(
-doc(db,"phase5_results",`match${matchNo}`),
+doc(db,"phase6_results",`match${matchNo}`),
 {
 winner: selected.value,
 locked: true
@@ -154,7 +154,7 @@ locked: true
 
 
 const snapshot =
-await getDocs(collection(db,"predictions_phase5"));
+await getDocs(collection(db,"predictions_phase6"));
 
 for(const userDoc of snapshot.docs){
 
@@ -171,7 +171,7 @@ if(data[`match${matchNo}`] === selected.value){
 }
 
 await updateDoc(
-doc(db,"predictions_phase5",userDoc.id),
+doc(db,"predictions_phase6",userDoc.id),
 {
 points: points,
 [`match${matchNo}Awarded`]: true
@@ -194,7 +194,7 @@ const leaderboard =
 document.getElementById("leaderboard");
 
 const snapshot =
-await getDocs(collection(db,"predictions_phase5"));
+await getDocs(collection(db,"predictions_phase6"));
 
 const users = [];
 
